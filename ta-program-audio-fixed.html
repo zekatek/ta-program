@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TA Activation – 21 Days</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #faf9f7;
+      color: #2a2a2a;
+    }
+    
+    body {
+      padding: 20px 0 40px 0;
+    }
+    
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .title {
+      font-size: 42px;
+      font-weight: 300;
+      letter-spacing: 4px;
+      color: #2a2a2a;
+      margin-bottom: 2px;
+    }
+    
+    .subtitle {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      color: #999;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+    
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: #d4d2ce;
+      margin: 16px auto;
+    }
+    
+    .tagline {
+      font-size: 13px;
+      color: #999;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      margin-top: 16px;
+    }
+    
+    .progress-section {
+      margin-top: 32px;
+      margin-bottom: 32px;
+    }
+    
+    .progress-bar {
+      height: 2px;
+      background: #e8e6e2;
+      border-radius: 1px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: #b8a894;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+    
+    .progress-text {
+      font-size: 12px;
+      color: #999;
+      letter-spacing: 0.5px;
+      text-align: center;
+    }
+    
+    .stats-section {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    
+    .stat-box {
+      flex: 1;
+      padding: 20px;
+      background: #fff;
+      border: 1px solid #e8e6e2;
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 28px;
+      font-weight: 400;
+      color: #2a2a2a;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+    
+    .card {
+      background: #fff;
+      border: 1px solid #e8e6e2;
+      padding: 32px 24px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    
+    .card-week {
+      font-size: 11px;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .card-title {
+      font-size: 20px;
+      font-weight: 400;
+      color: #2a2a2a;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+    
+    .card-duration {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 28px;
+    }
+    
+    .button {
+      width: 100%;
+      padding: 14px 24px;
+      background: #2a2a2a;
+      color: #faf9f7;
+      border: none;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    
+    .button:hover {
+      background: #1a1a1a;
+    }
+    
+    .button-secondary {
+      background: #e8e6e2;
+      color: #2a2a2a;
+    }
+    
+    .button-secondary:hover {
+      background: #d8d6d2;
+    }
+    
+    .timer-display {
+      font-size: 54px;
+      font-weight: 300;
+      color: #b8a894;
+      line-height: 1.1;
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+    }
+    
+    .timer-text {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 28px;
+      letter-spacing: 0.5px;
+    }
+    
+    .speaker-indicator {
+      font-size: 11px;
+      color: #999;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #e8e6e2;
+    }
+    
+    .complete-title {
+      font-size: 20px;
+      font-weight: 400;
+      color: #2a2a2a;
+      margin-bottom: 16px;
+    }
+    
+    .complete-text {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">TA</div>
+      <div class="subtitle">Transverse Abdominis Activation</div>
+      <div class="divider"></div>
+      <div class="tagline">21 Days</div>
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text" id="progressText">Day 1 of 21</div>
+    </div>
+
+    <div class="stats-section">
+      <div class="stat-box">
+        <div class="stat-value" id="completedCount">0</div>
+        <div class="stat-label">Completed</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="streakCount">0</div>
+        <div class="stat-label">Streak</div>
+      </div>
+    </div>
+
+    <div id="contentArea"></div>
+  </div>
+
+  <script>
+    // Audio queue system
+    class AudioQueue {
+      constructor() {
+        this.queue = [];
+        this.isSpeaking = false;
+      }
+
+      async speak(text) {
+        this.queue.push(text);
+        if (!this.isSpeaking) {
+          await this.processQueue();
+        }
+      }
+
+      async processQueue() {
+        while (this.queue.length > 0) {
+          this.isSpeaking = true;
+          const text = this.queue.shift();
+          await this.speakText(text);
+        }
+        this.isSpeaking = false;
+      }
+
+      speakText(text) {
+        return new Promise((resolve) => {
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 0.95;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+
+          utterance.onend = () => {
+            resolve();
+          };
+
+          utterance.onerror = (event) => {
+            console.error('Speech error:', event.error);
+            resolve();
+          };
+
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(utterance);
+        });
+      }
+
+      stop() {
+        window.speechSynthesis.cancel();
+        this.queue = [];
+        this.isSpeaking = false;
+      }
+    }
+
+    const audioQueue = new AudioQueue();
+
+    // State management
+    let state = {
+      currentDay: 1,
+      workoutStarted: false,
+      timeElapsed: 0,
+      streak: 0,
+      totalWorkouts: 0,
+      completedDays: new Set(),
+      timerInterval: null,
+    };
+
+    // Load saved progress
+    function loadProgress() {
+      const saved = localStorage.getItem('taProgress');
+      if (saved) {
+        const data = JSON.parse(saved);
+        state.currentDay = data.currentDay || 1;
+        state.streak = data.streak || 0;
+        state.totalWorkouts = data.totalWorkouts || 0;
+        state.completedDays = new Set(data.completedDays || []);
+      }
+    }
+
+    // Save progress
+    function saveProgress() {
+      localStorage.setItem('taProgress', JSON.stringify({
+        currentDay: state.currentDay,
+        streak: state.streak,
+        totalWorkouts: state.totalWorkouts,
+        completedDays: Array.from(state.completedDays),
+      }));
+    }
+
+    // Workout data - same workouts for all 21 days
+    const workoutData = {
+      1: {
+        week: 1,
+        title: 'Breath & Foundation',
+        cues: [
+          { at: 0, text: 'Welcome. Find a quiet space. Lie on your back, knees bent, feet flat on the floor.' },
+          { at: 8, text: 'Today we begin learning to activate your transverse abdominis through breath.' },
+          { at: 18, text: 'Press your lower back gently into the floor. Feel neutral spine.' },
+          { at: 28, text: 'Take a deep breath in through your nose for a count of four.' },
+          { at: 38, text: 'Exhale slowly through your mouth while drawing your belly button in and up toward your spine.' },
+          { at: 50, text: 'This is subtle. Not a forceful suck in. A gentle bracing.' },
+          { at: 60, text: 'Breathe in to reset.' },
+          { at: 90, text: 'Knees to table top. Raise both arms toward the ceiling.' },
+          { at: 105, text: 'Engage your core. Extend your right leg, lower your left arm.' },
+          { at: 130, text: 'Back to start. Left leg extends, right arm lowers.' },
+          { at: 155, text: 'Continue. Right leg.' },
+          { at: 180, text: 'Back. Left leg.' },
+          { at: 205, text: 'Rest.' },
+          { at: 220, text: 'Plank now. Forearm plank. Hold for 20 seconds.' },
+          { at: 240, text: 'Lower down.' },
+          { at: 255, text: 'Rest.' },
+          { at: 270, text: 'One more plank. 25 seconds.' },
+          { at: 295, text: 'Lower.' },
+          { at: 310, text: 'Day 1 complete. Return tomorrow.' },
+        ]
+      },
+    };
+
+    function getWorkout(day) {
+      if (workoutData[day]) {
+        return workoutData[day];
+      }
+
+      const week = Math.ceil(day / 7);
+      const baseWorkout = workoutData[1];
+
+      return {
+        week,
+        title: `Day ${day}`,
+        cues: [
+          { at: 0, text: `Day ${day}. Find a quiet space. Lie on your back.` },
+          { at: 10, text: 'Press your lower back into the floor. Neutral spine.' },
+          { at: 25, text: 'Breathing warm-up. Exhale and engage your core.' },
+          { at: 90, text: 'Knees to table top. Raise both arms.' },
+          { at: 105, text: 'Extend your right leg, lower your left arm.' },
+          { at: 130, text: 'Back to start. Left leg extends, right arm lowers.' },
+          { at: 155, text: 'Continue. Right leg.' },
+          { at: 180, text: 'Back. Left leg.' },
+          { at: 205, text: 'Rest.' },
+          { at: 220, text: 'Plank position. Forearm plank. Hold for 25 seconds.' },
+          { at: 245, text: 'Lower down.' },
+          { at: 260, text: 'Rest.' },
+          { at: 275, text: 'One more plank. 30 seconds.' },
+          { at: 305, text: 'Lower down.' },
+          { at: 315, text: `Day ${day} complete. You are building strength every day.` },
+        ]
+      };
+    }
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    function render() {
+      const progress = Math.min((state.currentDay / 21) * 100, 100);
+      document.getElementById('progressFill').style.width = `${progress}%`;
+      document.getElementById('progressText').textContent = `Day ${state.currentDay} of 21`;
+      document.getElementById('completedCount').textContent = state.totalWorkouts;
+      document.getElementById('streakCount').textContent = state.streak;
+
+      const contentArea = document.getElementById('contentArea');
+
+      if (state.currentDay > 21) {
+        contentArea.innerHTML = `
+          <div class="card">
+            <div class="complete-title">Complete</div>
+            <div class="complete-text">You have finished all 21 days of TA activation. Continue this practice 3 to 4 times per week alongside your yoga.</div>
+          </div>
+        `;
+      } else if (state.workoutStarted) {
+        contentArea.innerHTML = `
+          <div class="card">
+            <div class="timer-display" id="timerDisplay">${formatTime(state.timeElapsed)}</div>
+            <div class="timer-text">Listen to guidance</div>
+            <button class="button button-secondary" id="exitBtn">Exit</button>
+            <div class="speaker-indicator">Audio should be playing. If no audio, check volume and browser settings.</div>
+          </div>
+        `;
+        document.getElementById('exitBtn').onclick = stopWorkout;
+      } else {
+        const workout = getWorkout(state.currentDay);
+        contentArea.innerHTML = `
+          <div class="card">
+            <div class="card-week">Week ${workout.week}</div>
+            <div class="card-title">${workout.title}</div>
+            <div class="card-duration">~12 minutes</div>
+            <button class="button" id="startBtn">Begin Practice</button>
+          </div>
+        `;
+        document.getElementById('startBtn').onclick = startWorkout;
+      }
+    }
+
+    async function startWorkout() {
+      state.workoutStarted = true;
+      state.timeElapsed = 0;
+      render();
+
+      const workout = getWorkout(state.currentDay);
+      const cues = workout.cues.sort((a, b) => a.at - b.at);
+      let cueIndex = 0;
+
+      state.timerInterval = setInterval(() => {
+        state.timeElapsed++;
+        if (document.getElementById('timerDisplay')) {
+          document.getElementById('timerDisplay').textContent = formatTime(state.timeElapsed);
+        }
+
+        // Queue audio cues as they come up
+        while (cueIndex < cues.length && cues[cueIndex].at <= state.timeElapsed) {
+          audioQueue.speak(cues[cueIndex].text);
+          cueIndex++;
+        }
+
+        // Calculate when workout should end
+        const maxTime = Math.max(...cues.map(c => c.at)) + 3;
+        if (state.timeElapsed >= maxTime) {
+          clearInterval(state.timerInterval);
+          completeWorkout();
+        }
+      }, 1000);
+    }
+
+    function stopWorkout() {
+      state.workoutStarted = false;
+      state.timeElapsed = 0;
+      audioQueue.stop();
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+      }
+      render();
+    }
+
+    function completeWorkout() {
+      audioQueue.stop();
+      state.workoutStarted = false;
+      state.completedDays.add(state.currentDay);
+      state.totalWorkouts++;
+
+      let newStreak = 0;
+      for (let i = state.currentDay; i >= 1; i--) {
+        if (state.completedDays.has(i)) {
+          newStreak++;
+        } else {
+          break;
+        }
+      }
+      state.streak = newStreak;
+
+      if (state.currentDay < 21) {
+        state.currentDay++;
+      }
+
+      saveProgress();
+      render();
+    }
+
+    // Initialize
+    loadProgress();
+    render();
+  </script>
+</body>
+</html>
