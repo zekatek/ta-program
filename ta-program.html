@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TA Activation – 3-Week Program</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #fafaf8;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    function TAProgram() {
+      const [currentDay, setCurrentDay] = useState(1);
+      const [workoutStarted, setWorkoutStarted] = useState(false);
+      const [timeElapsed, setTimeElapsed] = useState(0);
+      const [streak, setStreak] = useState(0);
+      const [totalWorkouts, setTotalWorkouts] = useState(0);
+      const [completedDays, setCompletedDays] = useState(new Set());
+      const timerRef = useRef(null);
+      const synth = useRef(window.speechSynthesis);
+
+      // Load from localStorage on mount
+      useEffect(() => {
+        const saved = localStorage.getItem('taProgress');
+        if (saved) {
+          const data = JSON.parse(saved);
+          setCurrentDay(data.currentDay || 1);
+          setStreak(data.streak || 0);
+          setTotalWorkouts(data.totalWorkouts || 0);
+          setCompletedDays(new Set(data.completedDays || []));
+        }
+      }, []);
+
+      // Speak cue
+      const speak = (text, delay = 0) => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.95;
+            utterance.pitch = 1;
+            utterance.onend = resolve;
+            synth.current.speak(utterance);
+          }, delay);
+        });
+      };
+
+      // Get workout for current day
+      const getWorkout = (day) => {
+        const workouts = {
+          1: {
+            week: 1,
+            title: 'TA Breathing & Foundation',
+            segments: [
+              {
+                name: 'Breathing intro',
+                time: 120,
+                cues: [
+                  { at: 0, text: 'Welcome to week 1. Today we focus on learning to activate your transverse abdominis.' },
+                  { at: 3, text: 'Lie on your back with knees bent, feet flat on the floor.' },
+                  { at: 8, text: 'Take a deep breath in through your nose.' },
+                  { at: 12, text: 'Now exhale slowly through your mouth while drawing your belly button gently in and up towards your spine.' },
+                  { at: 18, text: 'Do not suck in. This should feel subtle, like a gentle bracing.' },
+                  { at: 25, text: 'You should feel a tightening under your fingertips if you place them just inside your hip bones.' },
+                  { at: 35, text: 'Breathe in to release.' },
+                  { at: 40, text: 'Now we will do this 8 times. Exhale and engage.' },
+                  { at: 55, text: 'Good. Breathe in to reset.' },
+                  { at: 65, text: 'Again, exhale and engage.' },
+                  { at: 75, text: 'Each time, focus on that subtle inward and upward feeling.' },
+                  { at: 90, text: 'Four more.' },
+                  { at: 110, text: 'Last one. Exhale and hold for 2 seconds.' },
+                ]
+              },
+              {
+                name: 'Dead bugs - basic',
+                time: 360,
+                cues: [
+                  { at: 0, text: 'Now we move to dead bugs. This is where activation meets movement.' },
+                  { at: 5, text: 'From your lying position, bring your knees up so your hips and knees are both at 90 degrees. Table top position.' },
+                  { at: 12, text: 'Raise both arms straight up toward the ceiling.' },
+                  { at: 15, text: 'Now, engage your TA using the breath we just practiced.' },
+                  { at: 20, text: 'Keep that engagement as you slowly extend your right leg forward, straightening it about 6 inches off the ground.' },
+                  { at: 28, text: 'At the same time, lower your left arm overhead, just above the ground.' },
+                  { at: 35, text: 'Return both to start. That is one rep.' },
+                  { at: 40, text: 'The key: keep your lower back on the ground the entire time. No arching.' },
+                  { at: 50, text: 'If your back starts to lift, reduce the range of motion.' },
+                  { at: 60, text: 'Now lets do 5 slow dead bugs. Focus on control, not speed.' },
+                  { at: 70, text: 'Extend right leg, lower left arm.' },
+                  { at: 90, text: 'Back to start.' },
+                  { at: 100, text: 'Extend left leg, lower right arm.' },
+                  { at: 120, text: 'Back to start.' },
+                  { at: 135, text: 'This is where you keep your TA engaged throughout the entire movement.' },
+                  { at: 150, text: 'Continue for 3 more.' },
+                  { at: 170, text: 'Right leg extends.' },
+                  { at: 190, text: 'Back.' },
+                  { at: 205, text: 'Left leg extends.' },
+                  { at: 225, text: 'Back.' },
+                  { at: 240, text: 'Last one. Right leg extends.' },
+                  { at: 260, text: 'Back.' },
+                  { at: 280, text: 'Excellent. Rest here for a moment. Keep your knees bent, feet on ground.' },
+                  { at: 300, text: 'That activation you felt, that is your transverse abdominis working.' },
+                  { at: 315, text: 'We are going to do one more set of 5. A bit slower this time.' },
+                  { at: 330, text: 'Engage your core.' },
+                  { at: 340, text: 'Extend and lower.' },
+                  { at: 360, text: 'Back to center.' },
+                ]
+              },
+              {
+                name: 'Plank intro',
+                time: 240,
+                cues: [
+                  { at: 0, text: 'Now we add a plank to build stability.' },
+                  { at: 5, text: 'Push yourself up to a forearm plank position. Elbows directly under your shoulders.' },
+                  { at: 12, text: 'Create a straight line from head to heels. Engage your core.' },
+                  { at: 18, text: 'Hold for 15 seconds. Focus on that TA engagement.' },
+                  { at: 35, text: 'Lower down.' },
+                  { at: 40, text: 'Rest for 10 seconds.' },
+                  { at: 50, text: 'Push back up to plank.' },
+                  { at: 55, text: 'Hold for 20 seconds this time.' },
+                  { at: 75, text: 'Lower down.' },
+                  { at: 80, text: 'Rest.' },
+                  { at: 90, text: 'One more plank. Hold for 25 seconds.' },
+                  { at: 115, text: 'Lower down.' },
+                  { at: 120, text: 'Excellent work.' },
+                  { at: 125, text: 'You have completed day 1. Rest tomorrow. Return for day 2 in 2 days.' },
+                  { at: 135, text: 'This awareness you built today will carry into all your yoga practice.' },
+                ]
+              },
+            ]
+          },
+          2: {
+            week: 1,
+            title: 'TA Breathing & Dead Bugs - Deeper',
+            segments: [
+              {
+                name: 'Breathing warm-up',
+                time: 90,
+                cues: [
+                  { at: 0, text: 'Day 2. Today we deepen your TA awareness.' },
+                  { at: 5, text: 'Lie on your back, knees bent, feet flat.' },
+                  { at: 10, text: 'Exhale and engage your core 5 times. Slow, controlled breaths.' },
+                  { at: 50, text: 'Good. Now bring your knees to table top.' },
+                ]
+              },
+              {
+                name: 'Dead bugs - 3 sets of 6',
+                time: 360,
+                cues: [
+                  { at: 0, text: 'Dead bugs today. 3 sets of 6 reps.' },
+                  { at: 8, text: 'Set 1 starting now. Engage your core.' },
+                  { at: 18, text: 'Right leg extends, left arm lowers.' },
+                  { at: 40, text: 'Back to start. Left leg extends, right arm lowers.' },
+                  { at: 65, text: 'Back. Right leg.' },
+                  { at: 90, text: 'Back. Left leg.' },
+                  { at: 115, text: 'Back. Right leg.' },
+                  { at: 140, text: 'Back. Left leg, final rep of set 1.' },
+                  { at: 165, text: 'Back. Rest for 10 seconds.' },
+                  { at: 175, text: 'Set 2. Engage your core. Move a bit slower this time.' },
+                  { at: 190, text: 'Right leg.' },
+                  { at: 220, text: 'Back. Left leg.' },
+                  { at: 250, text: 'Back. Right leg.' },
+                  { at: 280, text: 'Back. Left leg.' },
+                  { at: 310, text: 'Back. Right leg.' },
+                  { at: 340, text: 'Back. Left leg.' },
+                  { at: 365, text: 'Rest.' },
+                ]
+              },
+              {
+                name: 'Plank holds',
+                time: 180,
+                cues: [
+                  { at: 0, text: 'Plank now. 3 sets of 20 seconds.' },
+                  { at: 8, text: 'Push up to forearm plank. Set 1.' },
+                  { at: 28, text: 'Lower down. Rest 10 seconds.' },
+                  { at: 38, text: 'Set 2. Up to plank.' },
+                  { at: 58, text: 'Lower. Rest.' },
+                  { at: 68, text: 'Final set.' },
+                  { at: 88, text: 'Lower down.' },
+                  { at: 95, text: 'Excellent. You have completed day 2.' },
+                  { at: 105, text: 'Notice how the engagement is becoming more automatic.' },
+                  { at: 120, text: 'Rest tomorrow. See you in 2 days.' },
+                ]
+              },
+            ]
+          },
+          3: {
+            week: 1,
+            title: 'Integration Day',
+            segments: [
+              {
+                name: 'Warm-up',
+                time: 120,
+                cues: [
+                  { at: 0, text: 'Day 3. Final day of week 1. Today we integrate what you have learned.' },
+                  { at: 8, text: 'Lie down. Spend a moment feeling your lower back.' },
+                  { at: 18, text: 'Press it gently into the ground.' },
+                  { at: 25, text: 'This is neutral spine with core engagement.' },
+                  { at: 35, text: 'Exhale and engage your core 3 times to warm up.' },
+                ]
+              },
+              {
+                name: 'Dead bugs circuit',
+                time: 360,
+                cues: [
+                  { at: 0, text: 'Today we combine dead bugs at different tempos.' },
+                  { at: 10, text: 'Bring knees to table top. 5 slow dead bugs.' },
+                  { at: 30, text: 'Right leg extends.' },
+                  { at: 55, text: 'Back to start. Left leg extends.' },
+                  { at: 80, text: 'Back. Right leg.' },
+                  { at: 105, text: 'Back. Left leg.' },
+                  { at: 130, text: 'Back. Right leg, final.' },
+                  { at: 155, text: 'Back. Rest 15 seconds.' },
+                  { at: 170, text: 'Now 8 dead bugs at normal pace.' },
+                  { at: 185, text: 'Right leg extends.' },
+                  { at: 205, text: 'Back. Left leg.' },
+                  { at: 225, text: 'Back. Right leg.' },
+                  { at: 245, text: 'Back. Left leg.' },
+                  { at: 265, text: 'Back. Right leg.' },
+                  { at: 285, text: 'Back. Left leg.' },
+                  { at: 305, text: 'Back. Right leg.' },
+                  { at: 325, text: 'Back. Left leg, final.' },
+                  { at: 345, text: 'Back. Rest.' },
+                  { at: 360, text: 'Excellent control today.' },
+                ]
+              },
+              {
+                name: 'Final plank',
+                time: 120,
+                cues: [
+                  { at: 0, text: 'Final plank of the week. 2 sets of 30 seconds.' },
+                  { at: 8, text: 'Up to plank. Set 1.' },
+                  { at: 38, text: 'Lower. Rest 10 seconds.' },
+                  { at: 48, text: 'Set 2. Final set of the week.' },
+                  { at: 78, text: 'Lower down.' },
+                  { at: 85, text: 'You have completed week 1.' },
+                  { at: 95, text: 'Your TA awareness has grown significantly.' },
+                  { at: 105, text: 'Take 2 days off. Return with fresh legs for week 2.' },
+                ]
+              },
+            ]
+          },
+          8: {
+            week: 2,
+            title: 'Week 2 - Building Strength',
+            segments: [
+              {
+                name: 'Breathing warm-up',
+                time: 90,
+                cues: [
+                  { at: 0, text: 'Welcome to week 2. Your TA foundation is solid. Today we build on it.' },
+                  { at: 10, text: 'Lie on your back. Breathing warm-up. 3 long exhales with full core engagement.' },
+                  { at: 50, text: 'Bring your knees to table top for dead bugs.' },
+                ]
+              },
+              {
+                name: 'Dead bugs with control',
+                time: 360,
+                cues: [
+                  { at: 0, text: 'Today dead bugs are slightly slower, emphasizing control over speed.' },
+                  { at: 15, text: 'Set 1. 6 dead bugs. Very deliberate.' },
+                  { at: 35, text: 'Right leg extends about 4 inches off the ground.' },
+                  { at: 60, text: 'Lower it slowly over 3 seconds.' },
+                  { at: 70, text: 'Left arm returns.' },
+                  { at: 80, text: 'Back to start. Left leg extends.' },
+                  { at: 105, text: 'Lower over 3 seconds. Right arm returns.' },
+                  { at: 120, text: 'Continue this pattern. Right leg.' },
+                  { at: 150, text: 'Back. Left leg.' },
+                  { at: 180, text: 'Back. Right leg.' },
+                  { at: 210, text: 'Back. Left leg.' },
+                  { at: 240, text: 'Back. Right leg.' },
+                  { at: 270, text: 'Back. Left leg, final rep.' },
+                  { at: 300, text: 'Back. Rest 15 seconds.' },
+                  { at: 315, text: 'Set 2. 8 reps. Same slow pace.' },
+                  { at: 330, text: 'Right leg extends.' },
+                  { at: 360, text: 'Continue.' },
+                ]
+              },
+              {
+                name: 'Plank and 90/90',
+                time: 180,
+                cues: [
+                  { at: 0, text: 'Planks. Today 3 sets of 30 seconds.' },
+                  { at: 10, text: 'Set 1.' },
+                  { at: 40, text: 'Lower. Rest.' },
+                  { at: 50, text: 'Set 2.' },
+                  { at: 80, text: 'Lower. Rest.' },
+                  { at: 90, text: 'Set 3.' },
+                  { at: 120, text: 'Lower.' },
+                  { at: 130, text: 'Stay on your back. Bring your legs to 90 90 position.' },
+                  { at: 140, text: 'Hips and knees both at 90 degrees.' },
+                  { at: 150, text: 'Engage your core and hold for 20 seconds. Your lower back stays flat.' },
+                  { at: 170, text: 'Relax. You have completed day 8.' },
+                  { at: 180, text: 'Rest tomorrow. Return in 2 days.' },
+                ]
+              },
+            ]
+          },
+          15: {
+            week: 3,
+            title: 'Week 3 - Integration Challenge',
+            segments: [
+              {
+                name: 'Warm-up',
+                time: 90,
+                cues: [
+                  { at: 0, text: 'Welcome to week 3. Your final week. Your TA is now responsive and engaged.' },
+                  { at: 12, text: 'Lie down. Breathing warm-up. Feel your core ready to work.' },
+                  { at: 50, text: 'Bring your knees to table top.' },
+                ]
+              },
+              {
+                name: 'Advanced dead bugs',
+                time: 360,
+                cues: [
+                  { at: 0, text: 'Advanced dead bugs. Today you will extend your legs further and hold briefly.' },
+                  { at: 20, text: 'Set 1. 5 reps. As you extend your leg, your arm extends further too, above your head.' },
+                  { at: 45, text: 'Right leg extends fully, left arm extends overhead.' },
+                  { at: 70, text: 'Hold for 1 second.' },
+                  { at: 75, text: 'Back to start. Left leg extends fully, right arm extends overhead.' },
+                  { at: 100, text: 'Hold for 1 second.' },
+                  { at: 105, text: 'Back. Right leg.' },
+                  { at: 130, text: 'Back. Left leg.' },
+                  { at: 155, text: 'Back. Right leg, final.' },
+                  { at: 180, text: 'Back. Rest 15 seconds.' },
+                  { at: 195, text: 'Set 2. 8 reps. Same pattern. Full extension.' },
+                  { at: 220, text: 'Right leg and arm.' },
+                  { at: 245, text: 'Back. Left.' },
+                  { at: 270, text: 'Back. Continue. 6 more.' },
+                ]
+              },
+              {
+                name: 'Dynamic plank and cool down',
+                time: 240,
+                cues: [
+                  { at: 0, text: 'Plank. Today 2 sets of 35 seconds.' },
+                  { at: 10, text: 'Set 1.' },
+                  { at: 45, text: 'Lower. Rest.' },
+                  { at: 55, text: 'Set 2. Final plank of the program.' },
+                  { at: 90, text: 'Lower.' },
+                  { at: 100, text: 'Lie on your back. Bring knees to table top one final time.' },
+                  { at: 110, text: 'Exhale and engage your core. Feel the difference from day 1.' },
+                  { at: 130, text: 'You have completed the 3-week TA activation program.' },
+                  { at: 145, text: 'Your transverse abdominis is now consciously engaged and strengthening.' },
+                  { at: 160, text: 'Continue these exercises 2 to 3 times per week alongside your yoga practice.' },
+                  { at: 175, text: 'Well done.' },
+                ]
+              },
+            ]
+          },
+        };
+        return workouts[day] || null;
+      };
+
+      const runWorkout = async () => {
+        setWorkoutStarted(true);
+        setTimeElapsed(0);
+        const workout = getWorkout(currentDay);
+        if (!workout) return;
+
+        const allCues = [];
+        workout.segments.forEach((seg) => {
+          seg.cues.forEach((cue) => {
+            allCues.push({ time: cue.at, text: cue.text });
+          });
+        });
+        allCues.sort((a, b) => a.time - b.time);
+
+        let cueIndex = 0;
+        const interval = setInterval(() => {
+          setTimeElapsed((t) => {
+            const newTime = t + 1;
+            while (cueIndex < allCues.length && allCues[cueIndex].time <= newTime) {
+              speak(allCues[cueIndex].text);
+              cueIndex++;
+            }
+            return newTime;
+          });
+        }, 1000);
+
+        timerRef.current = interval;
+
+        const totalDuration = Math.max(...allCues.map((c) => c.time)) + 5;
+
+        await new Promise((resolve) => {
+          const checkInterval = setInterval(() => {
+            setTimeElapsed((t) => {
+              if (t >= totalDuration) {
+                clearInterval(checkInterval);
+                clearInterval(interval);
+                resolve();
+                return totalDuration;
+              }
+              return t;
+            });
+          }, 100);
+        });
+
+        completeWorkout();
+      };
+
+      const completeWorkout = () => {
+        const newCompleted = new Set(completedDays);
+        newCompleted.add(currentDay);
+        setCompletedDays(newCompleted);
+        setTotalWorkouts(totalWorkouts + 1);
+
+        let newStreak = 0;
+        for (let i = currentDay; i >= 1; i--) {
+          if (newCompleted.has(i)) {
+            newStreak++;
+          } else {
+            break;
+          }
+        }
+        setStreak(newStreak);
+
+        let nextDay = currentDay + 1;
+        if (currentDay === 3) nextDay = 8;
+        if (currentDay === 14) nextDay = 15;
+        if (nextDay <= 21) setCurrentDay(nextDay);
+
+        setWorkoutStarted(false);
+        setTimeElapsed(0);
+
+        const updated = {
+          currentDay: nextDay,
+          streak: newStreak,
+          totalWorkouts: totalWorkouts + 1,
+          completedDays: Array.from(newCompleted),
+        };
+        localStorage.setItem('taProgress', JSON.stringify(updated));
+      };
+
+      const formatTime = (seconds) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+      };
+
+      const workout = getWorkout(currentDay);
+      const week = workout?.week || 1;
+      const progress = Math.min((currentDay / 21) * 100, 100);
+
+      const styles = {
+        container: {
+          maxWidth: '500px',
+          margin: '0 auto',
+          padding: '20px',
+          backgroundColor: '#fafaf8',
+          minHeight: '100vh',
+        },
+        header: {
+          marginBottom: '32px',
+          textAlign: 'center',
+        },
+        title: {
+          fontSize: '28px',
+          fontWeight: '600',
+          color: '#1a1a1a',
+          letterSpacing: '-0.5px',
+          marginBottom: '4px',
+        },
+        subtitle: {
+          fontSize: '14px',
+          color: '#666',
+          fontWeight: '500',
+        },
+        stats: {
+          display: 'flex',
+          gap: '12px',
+          marginBottom: '28px',
+        },
+        statCard: {
+          flex: 1,
+          padding: '16px',
+          backgroundColor: '#fff',
+          borderRadius: '8px',
+          border: '1px solid #e5e5e0',
+          textAlign: 'center',
+        },
+        statNumber: {
+          fontSize: '32px',
+          fontWeight: '700',
+          color: '#2c5aa0',
+          lineHeight: '1',
+          marginBottom: '6px',
+        },
+        statLabel: {
+          fontSize: '12px',
+          color: '#999',
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px',
+        },
+        progressBar: {
+          height: '4px',
+          backgroundColor: '#e5e5e0',
+          borderRadius: '2px',
+          marginBottom: '8px',
+          overflow: 'hidden',
+        },
+        progressFill: {
+          height: '100%',
+          backgroundColor: '#2c5aa0',
+          transition: 'width 0.3s ease',
+        },
+        progressLabel: {
+          fontSize: '12px',
+          color: '#999',
+          marginBottom: '24px',
+          textAlign: 'center',
+        },
+        card: {
+          backgroundColor: '#fff',
+          borderRadius: '12px',
+          border: '1px solid #e5e5e0',
+          padding: '24px',
+        },
+        workoutTitle: {
+          fontSize: '18px',
+          fontWeight: '600',
+          color: '#1a1a1a',
+          marginBottom: '20px',
+        },
+        segments: {
+          marginBottom: '24px',
+        },
+        segment: {
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingBottom: '12px',
+          marginBottom: '12px',
+          borderBottom: '1px solid #f0f0ed',
+          fontSize: '14px',
+        },
+        segmentName: {
+          color: '#1a1a1a',
+          fontWeight: '500',
+        },
+        segmentTime: {
+          color: '#999',
+          fontSize: '13px',
+        },
+        button: {
+          width: '100%',
+          padding: '14px',
+          backgroundColor: '#2c5aa0',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '8px',
+          fontSize: '15px',
+          fontWeight: '600',
+          cursor: 'pointer',
+          transition: 'background-color 0.2s',
+        },
+        buttonSecondary: {
+          width: '100%',
+          padding: '14px',
+          backgroundColor: '#e5e5e0',
+          color: '#1a1a1a',
+          border: 'none',
+          borderRadius: '8px',
+          fontSize: '15px',
+          fontWeight: '600',
+          cursor: 'pointer',
+          transition: 'background-color 0.2s',
+        },
+        timer: {
+          fontSize: '48px',
+          fontWeight: '700',
+          color: '#2c5aa0',
+          textAlign: 'center',
+          lineHeight: '1.2',
+          marginBottom: '12px',
+        },
+        timerLabel: {
+          textAlign: 'center',
+          color: '#999',
+          fontSize: '14px',
+          marginBottom: '24px',
+        },
+        complete: {
+          fontSize: '24px',
+          fontWeight: '600',
+          color: '#1a1a1a',
+          marginBottom: '12px',
+        },
+        completeText: {
+          color: '#666',
+          fontSize: '14px',
+          lineHeight: '1.6',
+        },
+      };
+
+      return (
+        <div style={styles.container}>
+          <div style={styles.header}>
+            <div style={styles.title}>TA Activation</div>
+            <div style={styles.subtitle}>3-Week Progression</div>
+          </div>
+
+          <div style={styles.stats}>
+            <div style={styles.statCard}>
+              <div style={styles.statNumber}>{totalWorkouts}</div>
+              <div style={styles.statLabel}>Workouts</div>
+            </div>
+            <div style={styles.statCard}>
+              <div style={styles.statNumber}>{streak}</div>
+              <div style={styles.statLabel}>Streak</div>
+            </div>
+          </div>
+
+          <div style={styles.progressBar}>
+            <div style={{ ...styles.progressFill, width: `${progress}%` }} />
+          </div>
+          <div style={styles.progressLabel}>
+            Week {week} – Day {currentDay === 8 ? 1 : currentDay === 15 ? 1 : currentDay}
+          </div>
+
+          {!workoutStarted && workout ? (
+            <div style={styles.card}>
+              <div style={styles.workoutTitle}>{workout.title}</div>
+              <div style={styles.segments}>
+                {workout.segments.map((seg, i) => (
+                  <div key={i} style={styles.segment}>
+                    <div style={styles.segmentName}>{seg.name}</div>
+                    <div style={styles.segmentTime}>{Math.floor(seg.time / 60)} min</div>
+                  </div>
+                ))}
+              </div>
+              <button style={styles.button} onClick={runWorkout}>
+                Start Workout
+              </button>
+            </div>
+          ) : workoutStarted ? (
+            <div style={styles.card}>
+              <div style={styles.timer}>{formatTime(timeElapsed)}</div>
+              <div style={styles.timerLabel}>Listen for audio cues</div>
+              <button
+                style={styles.buttonSecondary}
+                onClick={() => {
+                  setWorkoutStarted(false);
+                  clearInterval(timerRef.current);
+                }}
+              >
+                Exit Workout
+              </button>
+            </div>
+          ) : (
+            <div style={styles.card}>
+              <div style={styles.complete}>Program Complete</div>
+              <div style={styles.completeText}>
+                You have finished the 3-week TA activation program. Continue these exercises 2–3 times per week with your yoga practice.
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<TAProgram />);
+  </script>
+</body>
+</html>
